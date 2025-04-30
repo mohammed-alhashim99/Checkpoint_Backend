@@ -1,24 +1,13 @@
 
 # 🎮 Checkpoint - Capstone Project
 
-## 👤 User Story
+##  User Story
 
 As a user, I want to add the games I play to my personal list and track whether I have completed them or not, including the playtime, so I can monitor my progress easily. I also want to rate and review the games and see other users' reviews.
 
 ---
 
-## 🎯 Project Goals
-
-- User registration and login
-- Add games to a user’s profile
-- Track game completion status
-- Log playtime
-- Review and rate games
-- View personal game list
-
----
-
-## 🧱 ERD - Entity Relationship Diagram
+##  ERD - Entity Relationship Diagram
 
 - `User`: Stores user information
 - `Games`: Stores game details
@@ -32,7 +21,15 @@ As a user, I want to add the games I play to my personal list and track whether 
 
 ---
 
-## 🔁 API Endpoints
+##  ERD - Entity Relationship Diagram
+
+The following diagram shows the main database structure for **Checkpoint**, including the relationships between users, games, user progress, and reviews.
+
+![ERD Diagram](Diagram.png)
+
+---
+
+##  API Endpoints
 
 ### User
 | HTTP Verb | Path           | Action   | Description                |
@@ -68,14 +65,5 @@ As a user, I want to add the games I play to my personal list and track whether 
 |-----------|-------------------|----------|---------------------------|
 | POST      | /games/:id/review | create   | Add a review to a game     |
 | GET       | /games/:id/review | index    | Get reviews for a game     |
-
----
-
-## 🛠️ Tech Stack
-
-- Backend: Django REST Framework
-- Frontend: React
-- Auth: JWT
-- Database: PostgreSQL
 
 ---
