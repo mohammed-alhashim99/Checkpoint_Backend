@@ -1,26 +1,25 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import GameViewSet, UserGameViewSet, ReviewViewSet, GameSearchView
-
-router = DefaultRouter()
-router.register(r'games', GameViewSet)
-router.register(r'usergames', UserGameViewSet)
-router.register(r'reviews', ReviewViewSet)
-
-urlpatterns = [
-    path('', include(router.urls)),
-    path('search/', GameSearchView.as_view(), name='game-search'),
-]
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import GameViewSet, UserGameViewSet, ReviewViewSet, GameSearchView
-
-router = DefaultRouter()
-router.register(r'games', GameViewSet)
-router.register(r'usergames', UserGameViewSet)
-router.register(r'reviews', ReviewViewSet)
+from django.urls import path
+from .views import (
+    GameListCreate, GameDetail,
+    UserGameListCreate, UserGameDetail,
+    ReviewListCreate, ReviewDetail,
+    GameSearchView, home_view
+)
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('search/', GameSearchView.as_view(), name='game-search'),
+    path('', home_view),
+    # 🎮 Game
+    path('games/', GameListCreate.as_view()),
+    path('games/<int:pk>/', GameDetail.as_view()),
+
+    # 👤 UserGame
+    path('usergames/', UserGameListCreate.as_view()),
+    path('usergames/<int:pk>/', UserGameDetail.as_view()),
+
+    # 📝 Review
+    path('reviews/', ReviewListCreate.as_view()),
+    path('reviews/<int:pk>/', ReviewDetail.as_view()),
+
+    # 🔍 RAWG Search
+    path('search/', GameSearchView.as_view()),
 ]
