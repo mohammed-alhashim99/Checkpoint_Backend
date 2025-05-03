@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import Game, UserGame, Review
-from django.contrib.auth.models import User
 
 # 🎮 Game Serializer
 class GameSerializer(serializers.ModelSerializer):
@@ -8,21 +7,29 @@ class GameSerializer(serializers.ModelSerializer):
         model = Game
         fields = '__all__'
 
-# 🧑‍💻 UserGame Serializer
+# 👤 UserGame Serializer
+class UserGameCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserGame
+        fields = '__all__'
+
 class UserGameSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserGame
         fields = '__all__'
 
-# 📝 Review Serializer
-class ReviewSerializer(serializers.ModelSerializer):
+class UserGameDetailSerializer(serializers.ModelSerializer):
+    game = GameSerializer(read_only=True)
+
     class Meta:
-        model = Review
+        model = UserGame
         fields = '__all__'
 
 
-class ReviewDetailSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField()
+# 📝 Review Serializer
+class ReviewSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(read_only=True)
+    game = GameSerializer(read_only=True)
 
     class Meta:
         model = Review
