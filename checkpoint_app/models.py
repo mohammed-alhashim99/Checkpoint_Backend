@@ -12,7 +12,7 @@ class Game(models.Model):
         return self.game_name
 
 class UserGame(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     is_completed = models.BooleanField(default=False)
     playtime_hours = models.IntegerField(default=0)

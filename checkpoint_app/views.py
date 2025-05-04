@@ -6,6 +6,8 @@ from .models import Game, UserGame, Review
 from .serializers import GameSerializer, UserGameSerializer, ReviewSerializer , UserGameCreateSerializer, UserGameDetailSerializer,UserSerializer
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+
+from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 # 🕹️ Game Views
 class GameListCreate(generics.ListCreateAPIView):
@@ -22,16 +24,27 @@ class GameDetail(generics.RetrieveUpdateDestroyAPIView):
 class UserGameListCreate(generics.ListCreateAPIView):
     queryset = UserGame.objects.all()
     serializer_class = UserGameSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsAuthenticated] 
 
     def create(self, request, *args, **kwargs):
         # print('🔎 Incoming request:', request.data) 
         serializer = self.get_serializer(data=request.data)
         if not serializer.is_valid():
-            print('❌ Errors:', serializer.errors)
+            # print('❌ Errors:', serializer.errors)
             return Response(serializer.errors, status=400)
         self.perform_create(serializer)
         return Response(serializer.data, status=201)
+    
+    def get_queryset(self):
+        return UserGame.objects.filter(user=self.request.user)  
+    
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user) 
+
+    def perform_create(self, serializer):
+        print("🧠 request.user =", self.request.user)
+        serializer.save(user=self.request.user)
+
     
     
     def get_serializer_class(self):
@@ -43,13 +56,15 @@ class UserGameListCreate(generics.ListCreateAPIView):
 class UserGameDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = UserGame.objects.all()
     serializer_class = UserGameSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsAuthenticated]
 
 # 📝 Review Views
 class ReviewListCreate(generics.ListCreateAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [permissions.AllowAny]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Review.objects.all()
@@ -117,3 +132,7 @@ class LoginView(APIView):
                 'user': UserSerializer(user).data
             })
         return Response({'error': 'Invalid credentials'}, status=401)
+    
+
+
+

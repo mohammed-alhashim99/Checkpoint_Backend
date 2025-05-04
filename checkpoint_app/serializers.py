@@ -14,6 +14,7 @@ class UserGameCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserGame
         fields = '__all__'
+        read_only_fields = ['user']
 
 class UserGameSerializer(serializers.ModelSerializer):
     class Meta:
@@ -33,6 +34,7 @@ class ReviewSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
     game = GameSerializer(read_only=True)
 
+
     class Meta:
         model = Review
         fields = '__all__'
@@ -47,3 +49,6 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
+    
+
+
