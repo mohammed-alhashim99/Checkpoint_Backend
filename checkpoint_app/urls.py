@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (
-    GameListCreate, GameDetail, GameSearchView,
+    GameListCreate, GameDetail, GameSearchView, LoginView, SignupView,
     UserGameListCreate, UserGameDetail,
     ReviewListCreate, ReviewDetail
 )
@@ -19,4 +19,7 @@ urlpatterns = [
     path('reviews/<int:pk>/', ReviewDetail.as_view()),
 
     path('search/', GameSearchView.as_view()), 
+
+    path('users/signup/', SignupView.as_view(), name='signup'),
+    path('users/login/', LoginView.as_view(), name='login'),
 ]

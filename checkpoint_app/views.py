@@ -1,10 +1,12 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import serializers
 import requests
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions,status
 from .models import Game, UserGame, Review
-from .serializers import GameSerializer, UserGameSerializer, ReviewSerializer , UserGameCreateSerializer, UserGameDetailSerializer
+from .serializers import GameSerializer, UserGameSerializer, ReviewSerializer , UserGameCreateSerializer, UserGameDetailSerializer,UserSerializer
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
 # 🕹️ Game Views
 class GameListCreate(generics.ListCreateAPIView):
     queryset = Game.objects.all()
@@ -85,3 +87,33 @@ class GameSearchView(APIView):
 
         except Exception as e:
             return Response({"error": str(e)}, status=500)
+
+
+class SignupView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        user = User.objects.get(username=response.data['username'])
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+            'user': response.data
+        }, status=status.HTTP_201_CREATED)
+
+class LoginView(APIView):
+    def post(self, request):
+        user = authenticate(
+            username=request.data.get('username'),
+            password=request.data.get('password')
+        )
+        if user:
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                'user': UserSerializer(user).data
+            })
+        return Response({'error': 'Invalid credentials'}, status=401)
