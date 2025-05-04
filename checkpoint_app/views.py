@@ -23,7 +23,7 @@ class UserGameListCreate(generics.ListCreateAPIView):
     permission_classes = [permissions.AllowAny]
 
     def create(self, request, *args, **kwargs):
-        print('🔎 Incoming request:', request.data)  # للتأكيد
+        # print('🔎 Incoming request:', request.data) 
         serializer = self.get_serializer(data=request.data)
         if not serializer.is_valid():
             print('❌ Errors:', serializer.errors)
@@ -79,8 +79,8 @@ class GameSearchView(APIView):
                     "rating": game.get("rating"),
                     "platforms": platforms,
                     "image": game.get("background_image")
-                })
 
+                })
             return Response(results)
 
         except Exception as e:
