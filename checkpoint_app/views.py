@@ -4,15 +4,13 @@ import requests
 from rest_framework import generics, permissions, status
 from .models import Game, UserGame, Review
 from .serializers import (
-    GameSerializer, UserGameSerializer, UserGameCreateSerializer,
-    UserGameDetailSerializer, UserSerializer, ReviewSerializer, ReviewCreateSerializer
+    GameSerializer, UserGameCreateSerializer, UserGameDetailSerializer,
+    UserSerializer, ReviewSerializer, ReviewCreateSerializer
 )
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
-
-
 
 # 🎮 Game Views
 class GameListCreate(generics.ListCreateAPIView):
@@ -28,27 +26,28 @@ class GameDetail(generics.RetrieveUpdateDestroyAPIView):
 # 👤 UserGame Views
 class UserGameListCreate(generics.ListCreateAPIView):
     queryset = UserGame.objects.all()
-    permission_classes = [IsAuthenticated] 
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return UserGame.objects.filter(user=self.request.user)  
-    
+        return UserGame.objects.filter(user=self.request.user)
+
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user) 
+        serializer.save(user=self.request.user)
 
     def get_serializer_class(self):
+        return UserGameCreateSerializer
+    
+    def get_serializer_class(self):
         if self.request.method == 'POST':
-            return UserGameCreateSerializer
+            return UserGameCreateSerializer  
         return UserGameDetailSerializer
 
 class UserGameDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = UserGame.objects.all()
-    serializer_class = UserGameSerializer
+    serializer_class = UserGameCreateSerializer
     permission_classes = [IsAuthenticated]
 
-
-
-# 🛡️ Custom Permission
+# 🔠 Custom Permission
 class IsOwnerOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
@@ -58,7 +57,11 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 # 📝 Review Views
 class ReviewListCreate(generics.ListCreateAPIView):
     queryset = Review.objects.all()
-    permission_classes = [IsAuthenticated]
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [IsAuthenticated()]
+        return []  # السماح لأي أحد بالقراءة فقط
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
