@@ -19,6 +19,9 @@ class UserGame(models.Model):
     added_at = models.DateTimeField(auto_now_add=True)
     completed_at = models.DateTimeField(null=True, blank=True)
 
+    class Meta:
+        unique_together = ('user', 'game')  
+
     def __str__(self):
         status = "✅" if self.is_completed else "⏳"
         return f'{self.user.username} - {self.game.game_name} {status}'

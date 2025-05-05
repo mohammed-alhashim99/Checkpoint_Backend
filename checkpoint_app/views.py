@@ -12,6 +12,8 @@ from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 
+
+
 # 🎮 Game Views
 class GameListCreate(generics.ListCreateAPIView):
     queryset = Game.objects.all()
@@ -43,6 +45,8 @@ class UserGameDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = UserGame.objects.all()
     serializer_class = UserGameSerializer
     permission_classes = [IsAuthenticated]
+
+
 
 # 🛡️ Custom Permission
 class IsOwnerOrReadOnly(permissions.BasePermission):

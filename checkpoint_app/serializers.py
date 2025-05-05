@@ -1,3 +1,4 @@
+from django.forms import ValidationError
 from rest_framework import serializers
 from .models import Game, UserGame, Review
 from django.contrib.auth.models import User
@@ -20,6 +21,13 @@ class UserGameSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserGame
         fields = '__all__'
+        def validate(self, data):
+            user = data.get('user')
+            game = data.get('game')
+            if UserGame.objects.filter(user=user, game=game).exists():
+                raise ValidationError("You already added this game.")
+            return data
+
 
 class UserGameDetailSerializer(serializers.ModelSerializer):
     game = GameSerializer(read_only=True)
