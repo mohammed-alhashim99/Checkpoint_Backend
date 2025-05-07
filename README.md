@@ -1,135 +1,114 @@
-# 🎮 Checkpoint - Game Tracker API
 
-Checkpoint is a full-featured backend API that allows users to:
-- Add games to their personal list
-- Track playtime and completion status
-- Submit and read reviews
-- Search for games via the RAWG API
-- Authenticate via JWT
+# 🎮 Checkpoint - Capstone Project
+
+## User Story
+
+As a user, I want to add the games I play to my personal list and track whether I have completed them or not, including the playtime, so I can monitor my progress easily. I also want to rate and review the games and see other users' reviews.
 
 ---
 
-## 🔧 Technologies
+## ERD - Entity Relationship Diagram
 
+The following diagram shows the main database structure for **Checkpoint**, including the relationships between users, games, user progress, and reviews.
+
+> 📌 **Insert your ERD image below by replacing `Diagram.png`**
+
+![ERD Diagram](Diagram.png)
+
+---
+
+## API Endpoints
+
+### User
+| HTTP Verb | Path           | Action   | Description                |
+|-----------|----------------|----------|----------------------------|
+| POST      | /register       | create   | Register new user          |
+| POST      | /login          | create   | Login user                 |
+| GET       | /user/:id/games | index    | Get user's games list      |
+
+---
+
+### Game
+| HTTP Verb | Path          | Action   | Description               |
+|-----------|---------------|----------|---------------------------|
+| GET       | /games        | index    | List all games            |
+| GET       | /games/:id    | show     | Show single game          |
+| POST      | /games        | create   | Add a new game            |
+| PUT       | /games/:id    | update   | Update game information   |
+| DELETE    | /games/:id    | destroy  | Delete a game             |
+
+---
+
+### UserGame
+| HTTP Verb | Path                     | Action   | Description                       |
+|-----------|--------------------------|----------|-----------------------------------|
+| POST      | /usergame                | create   | Add game to user's list           |
+| PUT       | /usergame/:id            | update   | Update playtime or completion     |
+| DELETE    | /usergame/:id            | destroy  | Remove game from user's list      |
+
+---
+
+### Reviews
+| HTTP Verb | Path              | Action   | Description               |
+|-----------|-------------------|----------|---------------------------|
+| POST      | /games/:id/review | create   | Add a review to a game     |
+| GET       | /games/:id/review | index    | Get reviews for a game     |
+
+---
+
+## 🛠️ Technologies Used
+
+- Python
 - Django & Django REST Framework
 - PostgreSQL
-- JWT Authentication (`djangorestframework-simplejwt`)
-- RAWG API integration
-- Unit Testing with Django's `TestCase`
+- JWT Authentication
+- Docker
+- RAWG API (for game search)
+- React (Frontend - not shown here)
 
 ---
 
-## 📦 Models
+## 🚀 How to Run the Project (Backend)
 
-### `User`
-Built-in Django user model for registration and authentication.
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/mohammed-alhashim99/Checkpoint_Backend.git
+   cd Checkpoint_Backend
+   ```
 
-### `Game`
-```python
-- game_id: int (unique)
-- game_name: str
-- release_date: date
-- rating: float
-- platform: str
-- image_url: URL
-```
+2. **Create and activate a virtual environment:**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows use: venv\Scripts\activate
+   ```
 
-### `UserGame`
-Tracks user's interaction with a game.
-```python
-- user: FK to User
-- game: FK to Game
-- is_completed: bool
-- playtime_hours: int
-- added_at: datetime (auto)
-- completed_at: datetime (nullable)
-```
+3. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-### `Review`
-```python
-- user: FK to User
-- game: FK to Game
-- rating: float
-- description: str
-- created_at: datetime (auto)
-```
+4. **Set up your `.env` file** with your database and secret settings.
 
----
+5. **Apply migrations:**
+   ```bash
+   python manage.py makemigrations
+   python manage.py migrate
+   ```
 
-## 🔐 Auth Endpoints
+6. **Run the server:**
+   ```bash
+   python manage.py runserver
+   ```
 
-| Method | Endpoint         | Description         |
-|--------|------------------|---------------------|
-| POST   | `/users/signup/` | Register new user   |
-| POST   | `/users/login/`  | Login + JWT tokens  |
+7. **Visit the API in the browser:**
+   ```
+   http://localhost:8000
+   ```
 
 ---
 
-## 🕹️ Game Endpoints
+## 🧊 Ice Box Features
 
-| Method | Endpoint                     | Description             |
-|--------|------------------------------|-------------------------|
-| GET    | `/games/`                    | List all games          |
-| POST   | `/games/`                    | Add a new game          |
-| GET    | `/games/<id>/`               | Game detail             |
-| PUT    | `/games/<id>/`               | Update game             |
-| DELETE | `/games/<id>/`               | Delete game             |
-| GET    | `/games/by-game-id/<gid>/`   | Fetch by RAWG game ID   |
-| GET    | `/search/?q=term`            | Search games (RAWG API) |
-
----
-
-## 🎯 UserGame Endpoints
-
-| Method | Endpoint              | Description                  |
-|--------|-----------------------|------------------------------|
-| GET    | `/usergames/`         | List user's games            |
-| POST   | `/usergames/`         | Add a game to user's list    |
-| PUT    | `/usergames/<id>/`    | Update playtime/status       |
-| DELETE | `/usergames/<id>/`    | Remove from user's list      |
-
----
-
-## 📝 Review Endpoints
-
-| Method | Endpoint                               | Description                 |
-|--------|----------------------------------------|-----------------------------|
-| GET    | `/reviews/`                            | List all reviews            |
-| POST   | `/reviews/`                            | Add a review                |
-| GET    | `/reviews/<id>/`                       | Get review detail           |
-| PUT    | `/reviews/<id>/`                       | Update review               |
-| DELETE | `/reviews/<id>/`                       | Delete review               |
-| GET    | `/reviews/by-game/<gid>/`              | Reviews for specific game   |
-| GET    | `/reviews/games/`                      | Games with at least 1 review|
-
----
-
-## ✅ Testing
-
-Tests cover:
-- Model creation and relationships
-- Cascade deletes (user/game)
-- Unique constraints on `UserGame`
-- Review linkage
-Run tests using:
-```bash
-python manage.py test
-```
-
----
-
-## 📁 ERD (Entity Relationship Diagram)
-
-- `User` 1 ⟶ M `UserGame`
-- `Game` 1 ⟶ M `UserGame`
-- `User` 1 ⟶ M `Review`
-- `Game` 1 ⟶ M `Review`
-
----
-
-## 📌 Notes
-
-- All game data uses `game_id` from RAWG to avoid duplicates.
-- Platforms are stored as comma-separated strings.
-- JWT tokens returned on login/signup.
-- Error handling implemented in views and serializers.
+- Dark mode toggle
+- Game recommendation system
+- Leaderboard for most active users
