@@ -1,35 +1,23 @@
 
 # 🎮 Checkpoint - Capstone Project
 
-##  User Story
+## User Story
 
 As a user, I want to add the games I play to my personal list and track whether I have completed them or not, including the playtime, so I can monitor my progress easily. I also want to rate and review the games and see other users' reviews.
 
 ---
 
-##  ERD - Entity Relationship Diagram
-
-- `User`: Stores user information
-- `Games`: Stores game details
-- `UserGame`: Join table connecting users and games with:
-  - Completion status
-  - Playtime hours
-  - Date added
-  - Date completed
-- `Reviews`: User-written reviews and ratings
-- `Platform`: Platform related to the game or review
-
----
-
-##  ERD - Entity Relationship Diagram
+## ERD - Entity Relationship Diagram
 
 The following diagram shows the main database structure for **Checkpoint**, including the relationships between users, games, user progress, and reviews.
+
+> 📌 **Insert your ERD image below by replacing `Diagram.png`**
 
 ![ERD Diagram](Diagram.png)
 
 ---
 
-##  API Endpoints
+## API Endpoints
 
 ### User
 | HTTP Verb | Path           | Action   | Description                |
@@ -67,3 +55,60 @@ The following diagram shows the main database structure for **Checkpoint**, incl
 | GET       | /games/:id/review | index    | Get reviews for a game     |
 
 ---
+
+## 🛠️ Technologies Used
+
+- Python
+- Django & Django REST Framework
+- PostgreSQL
+- JWT Authentication
+- Docker
+- RAWG API (for game search)
+- React (Frontend - not shown here)
+
+---
+
+## 🚀 How to Run the Project (Backend)
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/mohammed-alhashim99/Checkpoint_Backend.git
+   cd Checkpoint_Backend
+   ```
+
+2. **Create and activate a virtual environment:**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows use: venv\Scripts\activate
+   ```
+
+3. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Set up your `.env` file** with your database and secret settings.
+
+5. **Apply migrations:**
+   ```bash
+   python manage.py makemigrations
+   python manage.py migrate
+   ```
+
+6. **Run the server:**
+   ```bash
+   python manage.py runserver
+   ```
+
+7. **Visit the API in the browser:**
+   ```
+   http://localhost:8000
+   ```
+
+---
+
+## 🧊 Ice Box Features
+
+- Dark mode toggle
+- Game recommendation system
+- Leaderboard for most active users
