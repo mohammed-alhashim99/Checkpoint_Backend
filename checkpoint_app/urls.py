@@ -1,22 +1,28 @@
 from django.urls import path
 from .views import (
-    GameListCreate, GameDetail, GameSearchView, LoginView, SignupView,
+    GameByGameIdDetail, GameListCreate, GameDetail, GameSearchView, LoginView, ReviewByGameIdList, SignupView,
     UserGameListCreate, UserGameDetail,
-    ReviewListCreate, ReviewDetail
+    ReviewListCreate, ReviewDetail,ReivewGamesList
 )
 
 urlpatterns = [
-    # 🎮 Games
+    
     path('games/', GameListCreate.as_view()),
     path('games/<int:pk>/', GameDetail.as_view()),
+    path('games/by-game-id/<int:game_id>/', GameByGameIdDetail.as_view()),
 
-    # 👤 UserGames
+
+    
     path('usergames/', UserGameListCreate.as_view()),
     path('usergames/<int:pk>/', UserGameDetail.as_view()),
 
-    # 📝 Reviews
+    
     path('reviews/', ReviewListCreate.as_view()),
     path('reviews/<int:pk>/', ReviewDetail.as_view()),
+    path('reviews/games/', ReivewGamesList.as_view()),
+    path('reviews/by-game/<int:game_id>/', ReviewByGameIdList.as_view()),
+
+
 
     path('search/', GameSearchView.as_view()), 
 

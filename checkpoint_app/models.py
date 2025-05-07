@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Game(models.Model):
+    game_id = models.IntegerField(unique=True)
     game_name = models.CharField(max_length=100)
     release_date = models.DateField()
     rating = models.FloatField()

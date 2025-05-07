@@ -1,10 +1,11 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 import requests
+from rest_framework.generics import RetrieveAPIView
 from rest_framework import generics, permissions, status
 from .models import Game, UserGame, Review
 from .serializers import (
-    GameSerializer, UserGameCreateSerializer, UserGameDetailSerializer,
+    GameSerializer, ReviewListSerializer, UserGameCreateSerializer, UserGameDetailSerializer,
     UserSerializer, ReviewSerializer, ReviewCreateSerializer
 )
 from django.contrib.auth.models import User
@@ -12,7 +13,14 @@ from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 
-# 🎮 Game Views
+
+
+class GameByGameIdDetail(RetrieveAPIView):
+    queryset = Game.objects.all()
+    serializer_class = GameSerializer
+    lookup_field = 'game_id'
+
+
 class GameListCreate(generics.ListCreateAPIView):
     queryset = Game.objects.all()
     serializer_class = GameSerializer
@@ -23,7 +31,7 @@ class GameDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = GameSerializer
     permission_classes = [permissions.AllowAny]
 
-# 👤 UserGame Views
+
 class UserGameListCreate(generics.ListCreateAPIView):
     queryset = UserGame.objects.all()
     permission_classes = [IsAuthenticated]
@@ -47,21 +55,20 @@ class UserGameDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserGameCreateSerializer
     permission_classes = [IsAuthenticated]
 
-# 🔠 Custom Permission
 class IsOwnerOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
         return obj.user == request.user
 
-# 📝 Review Views
+
 class ReviewListCreate(generics.ListCreateAPIView):
     queryset = Review.objects.all()
 
     def get_permissions(self):
         if self.request.method == 'POST':
             return [IsAuthenticated()]
-        return []  # السماح لأي أحد بالقراءة فقط
+        return [permissions.AllowAny()] 
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
@@ -79,8 +86,25 @@ class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
         if self.request.method in ['PUT', 'PATCH']:
             return ReviewCreateSerializer
         return ReviewSerializer
+    
+class ReivewGamesList(generics.ListAPIView):
+    queryset = Review.objects.all().distinct("game")
+    serializer_class = ReviewListSerializer
+    permission_classes = [permissions.AllowAny]
 
-# 🔍 Game Search from RAWG API
+
+class ReviewByGameIdList(generics.ListAPIView):
+    serializer_class = ReviewListSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        game_id = self.kwargs['game_id']
+        return Review.objects.filter(game__game_id=game_id)
+
+
+
+
+
 class GameSearchView(APIView):
     def get(self, request):
         query = request.GET.get('q')
@@ -100,6 +124,7 @@ class GameSearchView(APIView):
             for game in data:
                 platforms = [p['platform']['name'] for p in game.get('platforms', [])]
                 results.append({
+                    "game_id":game.get("id"),
                     "name": game.get("name"),
                     "released": game.get("released"),
                     "rating": game.get("rating"),
@@ -111,7 +136,7 @@ class GameSearchView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=500)
 
-# 🔐 Authentication
+
 class SignupView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
