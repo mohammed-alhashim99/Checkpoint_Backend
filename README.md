@@ -109,6 +109,6 @@ The following diagram shows the main database structure for **Checkpoint**, incl
 
 ## 🧊 Ice Box Features
 
-- Dark mode toggle
+- Add new completed +1 if the user finishes the game more than one
 - Game recommendation system
 - Leaderboard for most active users
