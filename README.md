@@ -64,7 +64,7 @@ The following diagram shows the main database structure for **Checkpoint**, incl
 - JWT Authentication
 - Docker
 - RAWG API (for game search)
-- React (Frontend - not shown here)
+- React (Frontend )
 
 ---
 
