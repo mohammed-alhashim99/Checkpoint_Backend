@@ -78,8 +78,12 @@ The following diagram shows the main database structure for **Checkpoint**, incl
 
 2. **Create and activate a virtual environment:**
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows use: venv\Scripts\activate
+   pipenv install django
+   pipenv install python-dotenv
+   pipenv install djangorestframework
+   pipenv install django-cors-headers
+   pipenv install djangorestframework-simplejwt
+   createdb checkpoint
    ```
 
 3. **Install dependencies:**
