@@ -165,3 +165,11 @@ class LoginView(APIView):
                 'user': UserSerializer(user).data
             })
         return Response({'error': 'Invalid credentials'}, status=401)
+    
+
+class UserProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)

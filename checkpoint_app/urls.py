@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (
     GameByGameIdDetail, GameListCreate, GameDetail, GameSearchView, LoginView, ReviewByGameIdList, SignupView,
     UserGameListCreate, UserGameDetail,
-    ReviewListCreate, ReviewDetail,ReivewGamesList
+    ReviewListCreate, ReviewDetail,ReivewGamesList, UserProfileView
 )
 
 urlpatterns = [
@@ -28,4 +28,6 @@ urlpatterns = [
 
     path('users/signup/', SignupView.as_view(), name='signup'),
     path('users/login/', LoginView.as_view(), name='login'),
+
+    path('users/profile/',UserProfileView.as_view()),
 ]
